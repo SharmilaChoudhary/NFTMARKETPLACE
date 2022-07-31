@@ -22,7 +22,10 @@ contract NFTMarketplace is ERC721URIStorage {
       address payable seller;
       address payable owner;
       uint256 price;
+      uint256 expiry;
       bool sold;
+      uint256 created;
+       
     }
 
     event MarketItemCreated (
@@ -30,7 +33,9 @@ contract NFTMarketplace is ERC721URIStorage {
       address seller,
       address owner,
       uint256 price,
-      bool sold
+       uint256 expiry,
+      bool sold,
+      uint256  created
     );
 
     constructor() ERC721("Metaverse Tokens", "METT") {
@@ -65,13 +70,16 @@ contract NFTMarketplace is ERC721URIStorage {
     ) private {
       require(price > 0, "Price must be at least 1 wei");
       require(msg.value == listingPrice, "Price must be equal to listing price");
-
+ 
+        
       idToMarketItem[tokenId] =  MarketItem(
         tokenId,
         payable(msg.sender),
         payable(address(this)),
         price,
+        0,
         false
+        ,0
       );
 
       _transfer(msg.sender, address(this), tokenId);
@@ -80,7 +88,9 @@ contract NFTMarketplace is ERC721URIStorage {
         msg.sender,
         address(this),
         price,
-        false
+        0,
+        false,
+        0
       );
     }
 
@@ -167,7 +177,7 @@ contract NFTMarketplace is ERC721URIStorage {
           itemCount += 1;
         }
       }
-
+  
       MarketItem[] memory items = new MarketItem[](itemCount);
       for (uint i = 0; i < totalItemCount; i++) {
         if (idToMarketItem[i + 1].seller == msg.sender) {
@@ -178,5 +188,54 @@ contract NFTMarketplace is ERC721URIStorage {
         }
       }
       return items;
+    }
+      function executeSale(uint256 tokenId , uint expTime) public payable {
+        require(expTime>0,"Please enter a valid expiry time");
+
+
+        // uint price = idToMarketItem[tokenId].price;
+        // address seller = idToMarketItem[tokenId].seller;
+
+
+        //to check if nft is getting sold first time ,so we can issue warranty 
+        if(idToMarketItem[tokenId].expiry == 0){
+            idToMarketItem[tokenId].expiry  =  block.timestamp + expTime;
+            idToMarketItem[tokenId].created  =  block.timestamp;
+           
+        }
+
+
+        // require(msg.value == price, "Please submit the asking price in order to complete the purchase");
+
+        //update the details of the token
+        // idToMarketItem[tokenId].currentlyListed = true;
+        idToMarketItem[tokenId].seller = payable(msg.sender);
+        
+        _itemsSold.increment();
+
+        //Actually transfer the token to the new owner
+        _transfer(address(this), msg.sender, tokenId);
+        //approve the marketplace to sell NFTs on your behalf
+        approve(address(this), tokenId);
+
+        //Transfer the listing fee to the marketplace creator
+        // payable(owner).transfer(listPrice);
+        //Transfer the proceeds from the sale to the seller of the NFT
+        // payable(seller).transfer(msg.value);
+    }
+    
+  
+
+    
+
+
+    function BurnNFT(uint256 tokenId) public payable {
+        require(idToMarketItem[tokenId].expiry !=0,"warranty is yet to be issued" );
+        require(owner==msg.sender || idToMarketItem[tokenId].seller == payable(msg.sender)  ,"you need to own this warranty");
+        require(block.timestamp>idToMarketItem[tokenId].expiry,"warranty is yet to expire");
+
+        _burn(tokenId);
+        idToMarketItem[tokenId].seller = payable(0x0000000000000000000000000000000000000000);
+        idToMarketItem[tokenId].owner = payable(0x0000000000000000000000000000000000000000);
     }
 }
