@@ -37,24 +37,29 @@ export default function Home() {
         owner: i.owner,
         image: meta.data.image,
         name: meta.data.name,
-        description: meta.data.description,
+        serial: meta.data.serial,
       }
       return item
     }))
     setNfts(items)
     setLoadingState('loaded') 
   }
+  
   async function buyNft(nft) {
     /* needs the user to sign the transaction, so will use Web3Provider and sign it */
+    function time(date){
+      var date = new Date();
+    }
     
     const web3Modal = new Web3Modal()
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
     const signer = provider.getSigner()
     const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
-    var date = new Date();
-    var n = date;
-    document.getElementById("test").innerHTML = n;
+     
+     
+    // var n = date;
+    // document.getElementById("test").innerHTML = n;
     /* user will be prompted to pay the asking proces to complete the transaction */
     const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')   
     const transaction = await contract.createMarketSale(nft.tokenId, {
@@ -62,6 +67,7 @@ export default function Home() {
     })
     await transaction.wait()
     loadNFTs()
+   
   }
   if (loadingState === 'loaded' && !nfts.length) return (<h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>)
   return (
@@ -75,7 +81,7 @@ export default function Home() {
                 <div className="p-4">
                   <p style={{ height: '64px' }} className="text-2xl font-semibold">{nft.name}</p>
                   <div style={{ height: '70px', overflow: 'hidden' }}>
-                    <p className="text-gray-400">{nft.description}</p>
+                    <p className="text-gray-400">{nft.serial}</p>
                     
                   </div>
                 </div>
@@ -83,7 +89,7 @@ export default function Home() {
                   <p className="text-2xl font-bold text-white" > ₹ {nft.price}/- </p>
                   
                   <button className="mt-4 w-full bg-pink-500 text-white font-bold py-2 px-12 rounded" onClick={() => buyNft(nft)}>Buy</button>
-                <p className="mt-4 w-full bg-pink-500 text-white font-bold py-2 px-12 rounded" id='test'></p></div>
+                </div>
               </div>
             ))
           }

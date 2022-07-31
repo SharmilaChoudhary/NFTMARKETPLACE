@@ -11,10 +11,10 @@ import {
 import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketplace.json'
 
 export default function ResellNFT() {
-  const [formInput, updateFormInput] = useState({ price: '', image: '' })
+  const [formInput, updateFormInput] = useState({ price: '', image: '',serial:'' })
   const router = useRouter()
   const { id, tokenURI } = router.query
-  const { image, price } = formInput
+  const { image, price ,serial} = formInput
 
   useEffect(() => {
     fetchNFT()
@@ -24,6 +24,7 @@ export default function ResellNFT() {
     if (!tokenURI) return
     const meta = await axios.get(tokenURI)
     updateFormInput(state => ({ ...state, image: meta.data.image }))
+    updateFormInput(state => ({ ...state, serial: meta.data.serial }))
   }
 
   async function listNFTForSale() {
@@ -57,9 +58,12 @@ export default function ResellNFT() {
             <img className="rounded mt-4" width="350" src={image} />
           )
         }
+       
+        
         <button onClick={listNFTForSale} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg">
           Transfer Nft
         </button>
+        <div>Serial number is {serial} </div>
       </div>
     </div>
   )

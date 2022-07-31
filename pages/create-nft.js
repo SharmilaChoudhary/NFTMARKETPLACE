@@ -14,7 +14,7 @@ import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketp
 
 export default function CreateItem() {
   const [fileUrl, setFileUrl] = useState(null)
-  const [formInput, updateFormInput] = useState({ price: '', name: '', description: '' })
+  const [formInput, updateFormInput] = useState({ price: '', name: '', serial: '' })
   const router = useRouter()
 
   async function onChange(e) {
@@ -33,11 +33,11 @@ export default function CreateItem() {
     }  
   }
   async function uploadToIPFS() {
-    const { name, description, price } = formInput
-    if (!name || !description || !price || !fileUrl) return
+    const { name, serial, price } = formInput
+    if (!name || !serial || !price || !fileUrl) return
     /* first, upload to IPFS */
     const data = JSON.stringify({
-      name, description, image: fileUrl
+      name, serial, image: fileUrl
     })
     try {
       const added = await client.add(data)
@@ -77,9 +77,9 @@ export default function CreateItem() {
           onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
         />
         <textarea
-          placeholder="Product Description"
+          placeholder="Product serial"
           className="mt-2 border rounded p-4"
-          onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
+          onChange={e => updateFormInput({ ...formInput, serial: e.target.value })}
         />
         <input
           placeholder="Set the price of the product"
