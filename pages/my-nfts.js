@@ -72,7 +72,7 @@ if (loadingState === 'loaded' && !nfts.length) return (<h1 className="py-10 px-2
                 <img src={nft.image} className="rounded" />
                 <div className="p-4 bg-black">
 
-                  <p className="text-2xl font-bold text-white">Price - {nft.price} Eth</p>
+                  <p className="text-2xl font-bold text-white">Price - ₹{nft.price}/- </p>
                   <p className=" font-bold text-white">Owner - {nft.owner}</p>
                   <p className=" font-bold text-white">Details - {nft.serial}</p>
                   <p className=" font-bold text-white">Warranty Issued - 01-08-2022</p>

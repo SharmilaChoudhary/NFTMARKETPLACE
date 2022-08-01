@@ -55,6 +55,7 @@ export default function ResellNFT() {
     let contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
 let a=await contract.BurnNFT(id);
 await a.wait();
+console.log('nft:', tokenURI)
     router.push('/my-nfts')
   }
   
@@ -78,7 +79,7 @@ await a.wait();
         <button onClick={listNFTForSale} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg">
          Resell the product
         </button>
-        <button onClick={burn} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg"> Burn</button>
+        <button onClick={burn} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg"> Decay the warranty</button>
         
         
       </div>
