@@ -10,7 +10,9 @@ import {
 
 import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketplace.json'
 
+
 export default function MyAssets() {
+  
   const [nfts, setNfts] = useState([])
   const [loadingState, setLoadingState] = useState('not-loaded')
   const router = useRouter()
@@ -28,7 +30,7 @@ export default function MyAssets() {
 
     const marketplaceContract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
     const data = await marketplaceContract.fetchMyNFTs()
-
+  
     const items = await Promise.all(data.map(async i => {
       const tokenURI = await marketplaceContract.tokenURI(i.tokenId)
       const meta = await axios.get(tokenURI)
@@ -39,10 +41,9 @@ export default function MyAssets() {
         seller: i.seller,
         owner: i.owner,
         image: meta.data.image,
-        tokenURI
-      }
-      
-
+        tokenURI,
+        serial:meta.data.serial
+      }  
      
       return item
     }))
@@ -52,12 +53,18 @@ export default function MyAssets() {
   function listNFT(nft) {
     console.log('nft:', nft)
     router.push(`/resell-nft?id=${nft.tokenId}&tokenURI=${nft.tokenURI}`)
+    
+   
+    
   }
-  if (loadingState === 'loaded' && !nfts.length) return (<h1 className="py-10 px-20 text-3xl">No NFTs owned</h1>)
+
+  
+if (loadingState === 'loaded' && !nfts.length) return (<h1 className="py-10 px-20 text-3xl">No NFT Warranties available</h1>)
+
   return (
-    <div className="flex justify-center"><div className='border shadow  '><p className='ml-6'>Your warranties of the purchased products can be seen here</p>
+    <div className="flex justify-center"><div className='border shadow  '><div className="mt-4 w-full bg-blue-500 text-white font-bold py-2 px-12 rounded">Your warranties of the purchased products can be seen here</div>
       <div className=" border shadow p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-4 pt-4">
           {
             nfts.map((nft, i) => (
              
@@ -66,15 +73,30 @@ export default function MyAssets() {
                 <div className="p-4 bg-black">
 
                   <p className="text-2xl font-bold text-white">Price - {nft.price} Eth</p>
-                  <p className=" font-bold text-white">Owner Address - {nft.owner}</p>
-                  <button className="mt-4 w-full bg-blue-500 text-white font-bold py-2 px-12 rounded" onClick={() => listNFT(nft)}>View my NFT Warranty details</button>
+                  <p className=" font-bold text-white">Owner - {nft.owner}</p>
+                  <p className=" font-bold text-white">Details - {nft.serial}</p>
+                  <p className=" font-bold text-white">Warranty Issued - 01-08-2022</p>
+                  <p className=" font-bold text-white">Warranty Expires - 01-08-2023</p>
+
+
+                 
+                  
+                  <button className="mt-4 w-full bg-blue-500 text-white font-bold py-2 px-12 rounded" onClick={() => listNFT(nft)}>Resell and Burn my NFT warranty</button>
                 </div>
               </div>
             ))
           }
+         
+     
+   
+          
         </div>
       </div>
       </div>
     </div>
-  )
+  
+  );
+ 
+        
+        
 }

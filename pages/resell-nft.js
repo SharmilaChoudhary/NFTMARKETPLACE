@@ -25,7 +25,10 @@ export default function ResellNFT() {
     const meta = await axios.get(tokenURI)
     updateFormInput(state => ({ ...state, image: meta.data.image }))
     updateFormInput(state => ({ ...state, serial: meta.data.serial }))
+
   }
+
+  
 
   async function listNFTForSale() {
     if (!price) return
@@ -44,6 +47,19 @@ export default function ResellNFT() {
    
     router.push('/')
   }
+  async function burn(){
+    const web3Modal = new Web3Modal()
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+     const signer = provider.getSigner()
+    let contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
+let a=await contract.BurnNFT(id);
+await a.wait();
+    router.push('/my-nfts')
+  }
+  
+  
+  
 
   return (
     <div className="flex justify-center">
@@ -58,12 +74,13 @@ export default function ResellNFT() {
             <img className="rounded mt-4" width="350" src={image} />
           )
         }
-       
-        
+
         <button onClick={listNFTForSale} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg">
-          Transfer Nft
+         Resell the product
         </button>
-        <div>Serial number is {serial} </div>
+        <button onClick={burn} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg"> Burn</button>
+        
+        
       </div>
     </div>
   )

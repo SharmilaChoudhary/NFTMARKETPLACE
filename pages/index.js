@@ -8,6 +8,7 @@ import {
 } from '../config'
 
 import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketplace.json'
+import router from 'next/router'
 
 export default function Home() {
   const [nfts, setNfts] = useState([])
@@ -47,10 +48,7 @@ export default function Home() {
   
   async function buyNft(nft) {
     /* needs the user to sign the transaction, so will use Web3Provider and sign it */
-    function time(date){
-      var date = new Date();
-    }
-    
+   
     const web3Modal = new Web3Modal()
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
@@ -66,7 +64,9 @@ export default function Home() {
       value: price
     })
     await transaction.wait()
+    
     loadNFTs()
+   
    
   }
   if (loadingState === 'loaded' && !nfts.length) return (<h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>)
@@ -88,7 +88,7 @@ export default function Home() {
                 <div className="p-4 bg-black">
                   <p className="text-2xl font-bold text-white" > ₹ {nft.price}/- </p>
                   
-                  <button className="mt-4 w-full bg-pink-500 text-white font-bold py-2 px-12 rounded" onClick={() => buyNft(nft)}>Buy</button>
+                  <button className="mt-4 w-full bg-blue-500 text-white font-bold py-2 px-12 rounded" onClick={() => buyNft(nft)}>Buy</button>
                 </div>
               </div>
             ))

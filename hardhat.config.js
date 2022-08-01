@@ -16,12 +16,10 @@ module.exports = {
     //   url: "https://rpc-mumbai.matic.today",
     //   accounts: [process.env.privateKey]
     // },
-    matic: {
-       //Infura
-       //url: `https://polygon-mainnet.infura.io/v3/${infuraId}`,
-      url: "https://eth-goerli.g.alchemy.com/v2/bh4pS5ox6dbhgJdlc3bxBnBvuUAHU7sH",
-      accounts: [process.env.privateKey]
-    }
+    polygon_mumbai: {
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_TESTNET_API_KEY}`,
+      accounts: [process.env.PRIVATE_KEY]
+    },
     
   },
   solidity: {

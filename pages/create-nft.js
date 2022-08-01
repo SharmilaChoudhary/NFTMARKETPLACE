@@ -77,7 +77,7 @@ export default function CreateItem() {
           onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
         />
         <textarea
-          placeholder="Product serial"
+          placeholder="Model & Serial Number"
           className="mt-2 border rounded p-4"
           onChange={e => updateFormInput({ ...formInput, serial: e.target.value })}
         />

@@ -78,8 +78,8 @@ contract NFTMarketplace is ERC721URIStorage {
         payable(address(this)),
         price,
         0,
-        false
-        ,0
+        false,
+        0
       );
 
       _transfer(msg.sender, address(this), tokenId);
@@ -106,6 +106,10 @@ contract NFTMarketplace is ERC721URIStorage {
 
       _transfer(msg.sender, address(this), tokenId);
     }
+     
+
+     
+    
 
     /* Creates the sale of a marketplace item */
     /* Transfers ownership of the item, as well as funds between parties */
@@ -141,6 +145,7 @@ contract NFTMarketplace is ERC721URIStorage {
       }
       return items;
     }
+   
 
     /* Returns only items that a user has purchased */
     function fetchMyNFTs() public view returns (MarketItem[] memory) {
@@ -224,18 +229,22 @@ contract NFTMarketplace is ERC721URIStorage {
         // payable(seller).transfer(msg.value);
     }
     
-  
 
     
 
 
-    function BurnNFT(uint256 tokenId) public payable {
-        require(idToMarketItem[tokenId].expiry !=0,"warranty is yet to be issued" );
-        require(owner==msg.sender || idToMarketItem[tokenId].seller == payable(msg.sender)  ,"you need to own this warranty");
-        require(block.timestamp>idToMarketItem[tokenId].expiry,"warranty is yet to expire");
+    function BurnNFT(uint256 tokenId) public payable  {
+      
+        // require(idToMarketItem[tokenId].expiry !=0,"warranty is yet to be issued" );
+        // require(owner==msg.sender || idToMarketItem[tokenId].seller == payable(msg.sender)  ,"you need to own this warranty");
+        // require(block.timestamp>idToMarketItem[tokenId].expiry,"warranty is yet to expire");
 
-        _burn(tokenId);
-        idToMarketItem[tokenId].seller = payable(0x0000000000000000000000000000000000000000);
+   _burn(tokenId);
+   idToMarketItem[tokenId].seller = payable(msg.sender);
         idToMarketItem[tokenId].owner = payable(0x0000000000000000000000000000000000000000);
+        
+
+       
+       
     }
 }
